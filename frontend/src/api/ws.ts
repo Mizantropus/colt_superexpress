@@ -8,8 +8,9 @@ export type ServerMessage = {
 
 type MessageHandler = (message: ServerMessage) => void
 
+const proto = location.protocol === 'https:' ? 'wss:' : 'ws:'
 export const DEFAULT_URL =
-  (import.meta.env.VITE_WS_URL as string | undefined) ?? 'ws://localhost:8000/ws'
+  (import.meta.env.VITE_WS_URL as string | undefined) ?? `${proto}//${location.host}/ws`
 
 export class WsClient {
   private ws: WebSocket | null = null
