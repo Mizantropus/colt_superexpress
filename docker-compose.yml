@@ -1,0 +1,98 @@
+# Сервисы разработки: PostgreSQL, Redis, backend (FastAPI), frontend (Vue/Vite).
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: colt-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-colt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colt}
+      POSTGRES_DB: ${POSTGRES_DB:-colt_super_express}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-colt} -d ${POSTGRES_DB:-colt_super_express}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - colt-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: colt-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - colt-net
+
+  backend:
+    build: ./backend
+    container_name: colt-backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://colt:colt@db:5432/colt_super_express}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      PYTHONPATH: /app
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - colt-net
+
+  # frontend:
+  #   build: ./frontend
+  #   container_name: colt-frontend
+  #   environment:
+  #     VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+  #     VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:8000}
+  #   ports:
+  #     - "${FRONTEND_PORT:-5173}:5173"
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   command: npm run dev -- --host 0.0.0.0
+  #   healthcheck:
+  #     test: ["CMD", "node", "-e", "fetch('http://localhost:5173/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 10
+  #     start_period: 20s
+  #   networks:
+  #     - colt-net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  colt-net:
+    driver: bridge

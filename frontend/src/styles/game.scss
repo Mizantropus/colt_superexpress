@@ -1,0 +1,1684 @@
+  $size_step: #3498db;
+  
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background-color: #656260;
+  }
+  .music_player {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+
+    #music_toggle {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      padding: 10px;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.65);
+      cursor: pointer;
+
+      svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .sound_waves,
+      .mute_mark {
+        fill: none;
+      }
+
+      .mute_mark {
+        display: none;
+      }
+
+      &[data-muted="true"] {
+        .sound_waves {
+          display: none;
+        }
+
+        .mute_mark {
+          display: block;
+        }
+      }
+
+      &:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 3px;
+      }
+    }
+
+    .volume_panel {
+      position: absolute;
+      top: 56px;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 190px;
+      padding: 12px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 160ms ease, transform 160ms ease, visibility 160ms;
+
+      label {
+        font: 14px sans-serif;
+        white-space: nowrap;
+      }
+
+      input {
+        width: 100%;
+        accent-color: #7cb5e2;
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      .volume_panel {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .music_player .volume_panel {
+      transition: none;
+    }
+  }
+
+  .ornament {
+    width: 100%;
+    height: 30px;
+    top: 450px;
+    position: absolute;
+    background-image: url('/images/ornament.jpg');
+    background-repeat: repeat-x;
+    background-size: contain;
+  }
+
+  .mover_wrapper {
+    width: 100%;
+    height: 100px;
+    position: relative;
+    .mover {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      margin-left: -50px;
+      // border-radius: 50%;
+      // background-color: #00000050;
+      // background-color: #000000;
+      background-image: url('/images/skull.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      width:100px;
+      height: 80px;
+      z-index: 22;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      // outline: 3px solid #fff;
+      // outline-offset: 3px;
+      &:active {
+        cursor: grabbing;
+      }
+      &:focus-visible {
+        background-color: #000000;
+      }
+    }
+  }
+  .background_wrapper {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background-image: url('/images/sky.jpg');
+    background-repeat: repeat-x;
+    background-position: top;
+    .background {
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: max-content;
+      height: 100%;
+      width: 5280px;
+      z-index: 0;
+      animation: background-scroll 12s linear infinite;
+      background-image: url('/images/mountains.png');
+      background-repeat: repeat-x;
+      background-position: bottom;
+      // img {
+      //   display: block;
+      //   flex: 0 0 auto;
+      //   width: auto;
+      //   max-width: none;
+      //   height: 100%;
+      // }
+    }
+    .reels {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: max-content;
+      height: 76px;
+      width: 5280px;
+      z-index: 1;
+      animation: background-scroll 10s linear infinite;
+      background-image: url('/images/reels.jpg');
+      background-repeat: repeat-x;
+      background-position: bottom;
+    }
+    .train_wrapper {
+      position: absolute;
+      left: 0;
+      bottom: 14.8%;
+      width: auto;
+      height: 200px;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1;
+      // background-color: #00000050;
+      .vagon {
+        width: 390px;
+        min-width: 375px;
+        height: 141px;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        filter: brightness(1.3) grayscale(0.5);
+        position: relative;
+        align-items: flex-end;
+        &::before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          left: 0;
+          bottom: 0;
+          width: 390px;
+          min-width: 375px;
+          height: 141px;
+          background-image: url('/images/vagon.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center bottom;
+        }
+        .vagon_wheel {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          z-index: -1;
+          background-image: url('/images/vagon_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 0.537s linear infinite;
+        }
+        .wheel_1 {
+          bottom: 0;
+          right: 33px;
+        }
+        .wheel_2 {
+          bottom: 0;
+          right: 90px;
+        }
+        .wheel_3 {
+          bottom: 0;
+          left: 33px;
+        }
+        .wheel_4 {
+          bottom: 0;
+          left: 90px;
+        }
+      }
+      .lokomotive {
+        position: relative;
+        width: 390px;
+        height: 100%;
+        filter: brightness(1.1) grayscale(0.5);
+        min-height: 200px;
+        &::before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          left: 0;
+          bottom: 0;
+          width: 390px;
+          min-height: 200px;
+          height: 100%;
+          background-image: url('/images/lokomotiv.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center bottom;
+        }
+        .vagon_wheel {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          z-index: -1;
+          background-image: url('/images/vagon_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 0.537s linear infinite;
+        }
+        .wheel {
+          position: absolute;
+          z-index: 1;
+          bottom: 0;
+          right: 3%;
+          width: 64px;
+          height: 64px;
+          background-image: url('/images/lokomotive_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 1.143s linear infinite;
+        }
+        .wheel_3 {
+          bottom: 0;
+          left: 32px;
+        }
+        .wheel_4 {
+          bottom: 0;
+          left: 91px;
+        }
+      }
+      .delorian {
+        width: 390px;
+        height: 100%;
+        position: relative;
+        min-height: 200px;
+        &::before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          left: 0;
+          bottom: 0;
+          width: 390px;
+          height: 100%;
+          min-height: 200px;
+          background-image: url('/images/delorian.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center bottom;
+        }
+        .small_wheel {
+          position: absolute;
+          z-index: 1;
+          bottom: 0;
+          left: 23px;
+          width: 34px;
+          height: 34px;
+          background-image: url('/images/lokomotive_small_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 0.606s linear infinite;
+        }
+        .wheel_back {
+          position: absolute;
+          z-index: 1;
+          bottom: 0;
+          left: 30%;
+          width: 43px;
+          height: 43px;
+          background-image: url('/images/delorian_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 0.768s linear infinite;
+        }
+        .wheel_front {
+          position: absolute;
+          z-index: 1;
+          bottom: 0;
+          right: 17%;
+          width: 43px;
+          height: 43px;
+          background-image: url('/images/delorian_wheel.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+          animation: spin 0.768s linear infinite;
+        }
+      }
+    }
+    .hobby_horsing_wrapper {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hobby_horsing {
+      position: absolute;
+      left: 0px;
+      bottom: 0;
+      width: 150px;
+      height: 100px;
+      opacity: 0;
+    }
+    .hobby_horsing {
+      background-repeat: no-repeat;
+      background-size: 200% 400%;
+      animation: horse-ride 5s linear forwards, horse-frames 1s steps(1, end) infinite;
+    }
+    .cowboys_wrapper {
+      position: absolute;
+      left: 0;
+      bottom: 14.8%;
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1;
+
+      .cowboy {
+        position: relative;
+        bottom: 35px;
+        width: 38px;
+        height: 62px;
+        height: auto;
+        filter: drop-shadow(2px 4px 6px black);
+        &::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 48px;
+          height: 62px;
+          transform: translateX(-50%);
+          background-repeat: no-repeat;
+          background-size: 400% 400%;
+        }
+      }
+      .cowboy.staying_right {
+        position: relative;
+        bottom: 35px;
+        width: 38px;
+        height: 62px;
+        height: auto;
+        filter: drop-shadow(2px 4px 6px black);
+        &::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 48px;
+          height: 62px;
+          transform: translateX(-50%);
+          background-repeat: no-repeat;
+          background-size: 400% 400%;
+          animation: cowboy-staying 1.4s steps(1, end) infinite;
+        }
+      }
+      .cowboy.staying_left {
+        position: relative;
+        bottom: 35px;
+        width: 38px;
+        height: 62px;
+        height: auto;
+        filter: drop-shadow(2px 4px 6px black);
+        &::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 48px;
+          height: 62px;
+          transform: translateX(-50%);
+          background-repeat: no-repeat;
+          background-size: 400% 400%;
+          animation: cowboy-staying 1.4s steps(1, end) infinite;
+          transform: translateX(-50%) scaleX(-1);
+        }
+      }
+      .cowboy.shoot_right::before {
+        width: 78px;
+        height: 62px;
+        background-size: 500% 500%;
+        animation: cowboy-shoot 2s steps(1, end) forwards;
+      }
+      .cowboy.shoot_left::before {
+        width: 78px;
+        height: 62px;
+        background-size: 500% 500%;
+        animation: cowboy-shoot 2s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.shoot_itself_right::before {
+        width: 62px;
+        height: 62px;
+        background-size: 600% 600%;
+        animation: cowboy-shoot-itself 4s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.shoot_itself_left::before {
+        width: 62px;
+        height: 62px;
+        background-size: 600% 600%;
+        animation: cowboy-shoot-itself 4s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.shoot_from_hip_right::before {
+        width: 74px;
+        height: 62px;
+        background-size: 1100% 200%;
+        animation: cowboy-shoot-from-hip 2s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.shoot_from_hip_left::before {
+        width: 74px;
+        height: 62px;
+        background-size: 1100% 200%;
+        animation: cowboy-shoot-from-hip 2s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.cowboy_rotate::before {
+        width: 48px;
+        height: 62px;
+        background-size: 300% 300%;
+        animation: cowboy-rotate 1s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.climbing {
+        bottom: 35px;
+      }
+      .cowboy.climbing::before {
+        width: 84px;
+        height: 156px;
+        background-size: 400% 400%;
+        animation: cowboy-climbing 2s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.jumping_down::before {
+        width: 41px;
+        height: 162px;
+        background-size: 400% 400%;
+        animation: cowboy-jumping-down 2s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.climbing_up {
+        bottom: 102px;
+        left: 29px;
+      }
+      .cowboy.fall_forvard_right {
+        animation: cowboy-fall-right-move 1.7s ease-out forwards;
+      }
+      .cowboy.fall_forvard_left {
+        animation: cowboy-fall-left-move 1.7s ease-out forwards;
+        transform: scaleX(-1);
+      }
+      .cowboy.fall_forvard_right::before {
+        width: 74px;
+        height: 65px;
+        background-size: 400% 500%;
+        animation: cowboy-fall-frames 1.7s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.fall_forvard_left::before {
+        width: 74px;
+        height: 65px;
+        background-size: 400% 500%;
+        animation: cowboy-fall-frames 1.7s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.fall_target.laying_right {
+        transform: translateX(390px);
+      }
+      .cowboy.fall_target.laying_right::before {
+        width: 63px;
+        height: 42px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        animation: none;
+        transform: translateX(-50%);
+      }
+      .cowboy.fall_back_right {
+        animation: cowboy-fall-back-move-left 1.7s ease-out forwards;
+      }
+      .cowboy.fall_back_left {
+        animation: cowboy-fall-back-move-right 1.7s ease-out forwards;
+      }
+      .cowboy.fall_back_right::before {
+        width: 64px;
+        height: 65px;
+        background-size: 500% 500%;
+        animation: cowboy-fall-back-frames 1.7s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.fall_back_left::before {
+        width: 64px;
+        height: 65px;
+        background-size: 500% 500%;
+        animation: cowboy-fall-back-frames 1.7s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.laying_right::before {
+        width: 63px;
+        height: 42px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        animation: none;
+        transform: translateX(-50%);
+      }
+      .cowboy.laying_left::before {
+        width: 63px;
+        height: 42px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        animation: none;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.rotate_target.staying_left::before {
+        background-image: url('/images/staying_east_red.png');
+        background-size: 400% 400%;
+        animation: cowboy-staying 1.4s steps(1, end) infinite;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.getup_right::before {
+        width: 63px;
+        height: 63px;
+        background-size: 200% 700%;
+        animation: cowboy-getup-right 2s steps(1, end) forwards;
+        transform: translateX(-50%);
+      }
+      .cowboy.getup_left::before {
+        width: 63px;
+        height: 63px;
+        background-size: 200% 700%;
+        animation: cowboy-getup-right 2s steps(1, end) forwards;
+        transform: translateX(-50%) scaleX(-1);
+      }
+      .cowboy.cowboy_shoot::before {
+        width: 78px;
+        height: 62px;
+        background-image: url('/images/shoot_red.png');
+        background-size: 500% 500%;
+        animation: cowboy-shoot 2s steps(1, end) forwards;
+      }
+      .walking_right {
+        position: absolute;
+        width: 48px;
+        &::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 48px;
+          height: 62px;
+          transform: translateX(-50%);
+          background-repeat: no-repeat;
+          background-size: 400% 800%;
+          animation: cowboy-walking 1.6s steps(1, end) infinite;
+        }
+      }
+      .walking_left {
+        position: absolute;
+        width: 48px;
+        &::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 48px;
+          height: 62px;
+          transform: translateX(-50%) scaleX(-1);
+          background-repeat: no-repeat;
+          background-size: 400% 800%;
+          animation: cowboy-walking 1.6s steps(1, end) infinite;
+        }
+      }
+    }
+  }
+
+  @keyframes background-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes cowboy-staying {
+    0% { background-position: 0 0; }
+    7.142857% { background-position: 33.333333% 0; }
+    14.285714% { background-position: 66.666667% 0; }
+    21.428571% { background-position: 100% 0; }
+    28.571429% { background-position: 0 33.333333%; }
+    35.714286% { background-position: 33.333333% 33.333333%; }
+    42.857143% { background-position: 66.666667% 33.333333%; }
+    50% { background-position: 100% 33.333333%; }
+    57.142857% { background-position: 0 66.666667%; }
+    64.285714% { background-position: 33.333333% 66.666667%; }
+    71.428571% { background-position: 66.666667% 66.666667%; }
+    78.571429% { background-position: 100% 66.666667%; }
+    85.714286% { background-position: 0 100%; }
+    92.857143% { background-position: 33.333333% 100%; }
+    100% { background-position: 0 0; }
+  }
+
+  @keyframes cowboy-shoot {
+    0% { background-position: 0 0; }
+    4% { background-position: 25% 0; }
+    8% { background-position: 50% 0; }
+    12% { background-position: 75% 0; }
+    16% { background-position: 100% 0; }
+    20% { background-position: 0 25%; }
+    24% { background-position: 25% 25%; }
+    28% { background-position: 50% 25%; }
+    32% { background-position: 75% 25%; }
+    36% { background-position: 100% 25%; }
+    40% { background-position: 0 50%; }
+    44% { background-position: 25% 50%; }
+    48% { background-position: 50% 50%; }
+    52% { background-position: 75% 50%; }
+    56% { background-position: 100% 50%; }
+    60% { background-position: 0 75%; }
+    64% { background-position: 25% 75%; }
+    68% { background-position: 50% 75%; }
+    72% { background-position: 75% 75%; }
+    76% { background-position: 100% 75%; }
+    80% { background-position: 0 100%; }
+    84% { background-position: 25% 100%; }
+    88% { background-position: 50% 100%; }
+    92% { background-position: 75% 100%; }
+    96%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-shoot-itself {
+    0% { background-position: 0 0; }
+    2.777778% { background-position: 20% 0; }
+    5.555556% { background-position: 40% 0; }
+    8.333333% { background-position: 60% 0; }
+    11.111111% { background-position: 80% 0; }
+    13.888889% { background-position: 100% 0; }
+    16.666667% { background-position: 0 20%; }
+    19.444444% { background-position: 20% 20%; }
+    22.222222% { background-position: 40% 20%; }
+    25% { background-position: 60% 20%; }
+    27.777778% { background-position: 80% 20%; }
+    30.555556% { background-position: 100% 20%; }
+    33.333333% { background-position: 0 40%; }
+    36.111111% { background-position: 20% 40%; }
+    38.888889% { background-position: 40% 40%; }
+    41.666667% { background-position: 60% 40%; }
+    44.444444% { background-position: 80% 40%; }
+    47.222222% { background-position: 100% 40%; }
+    50% { background-position: 0 60%; }
+    52.777778% { background-position: 20% 60%; }
+    55.555556% { background-position: 40% 60%; }
+    58.333333% { background-position: 60% 60%; }
+    61.111111% { background-position: 80% 60%; }
+    63.888889% { background-position: 100% 60%; }
+    66.666667% { background-position: 0 80%; }
+    69.444444% { background-position: 20% 80%; }
+    72.222222% { background-position: 40% 80%; }
+    75% { background-position: 60% 80%; }
+    77.777778% { background-position: 80% 80%; }
+    80.555556% { background-position: 100% 80%; }
+    83.333333% { background-position: 0 100%; }
+    86.111111% { background-position: 20% 100%; }
+    88.888889% { background-position: 40% 100%; }
+    91.666667% { background-position: 60% 100%; }
+    94.444444% { background-position: 80% 100%; }
+    97.222222%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-shoot-from-hip {
+    0% { background-position: 0 0; }
+    4.545455% { background-position: 10% 0; }
+    9.090909% { background-position: 20% 0; }
+    13.636364% { background-position: 30% 0; }
+    18.181818% { background-position: 40% 0; }
+    22.727273% { background-position: 50% 0; }
+    27.272727% { background-position: 60% 0; }
+    31.818182% { background-position: 70% 0; }
+    36.363636% { background-position: 80% 0; }
+    40.909091% { background-position: 90% 0; }
+    45.454545% { background-position: 100% 0; }
+    50% { background-position: 0 100%; }
+    54.545455% { background-position: 10% 100%; }
+    59.090909% { background-position: 20% 100%; }
+    63.636364% { background-position: 30% 100%; }
+    68.181818% { background-position: 40% 100%; }
+    72.727273% { background-position: 50% 100%; }
+    77.272727% { background-position: 60% 100%; }
+    81.818182% { background-position: 70% 100%; }
+    86.363636% { background-position: 80% 100%; }
+    90.909091% { background-position: 90% 100%; }
+    95.454545%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-climbing {
+    0% { background-position: 0 0; }
+    6.25% { background-position: 33.333333% 0; }
+    12.5% { background-position: 66.666667% 0; }
+    18.75% { background-position: 100% 0; }
+    25% { background-position: 0 33.333333%; }
+    31.25% { background-position: 33.333333% 33.333333%; }
+    37.5% { background-position: 66.666667% 33.333333%; }
+    43.75% { background-position: 100% 33.333333%; }
+    50% { background-position: 0 66.666667%; }
+    56.25% { background-position: 33.333333% 66.666667%; }
+    62.5% { background-position: 66.666667% 66.666667%; }
+    68.75% { background-position: 100% 66.666667%; }
+    75% { background-position: 0 100%; }
+    81.25% { background-position: 33.333333% 100%; }
+    87.5% { background-position: 66.666667% 100%; }
+    93.75%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-jumping-down {
+    0% { background-position: 0 0; }
+    6.25% { background-position: 33.333333% 0; }
+    12.5% { background-position: 66.666667% 0; }
+    18.75% { background-position: 100% 0; }
+    25% { background-position: 0 33.333333%; }
+    31.25% { background-position: 33.333333% 33.333333%; }
+    37.5% { background-position: 66.666667% 33.333333%; }
+    43.75% { background-position: 100% 33.333333%; }
+    50% { background-position: 0 66.666667%; }
+    56.25% { background-position: 33.333333% 66.666667%; }
+    62.5% { background-position: 66.666667% 66.666667%; }
+    68.75% { background-position: 100% 66.666667%; }
+    75% { background-position: 0 100%; }
+    81.25% { background-position: 33.333333% 100%; }
+    87.5% { background-position: 66.666667% 100%; }
+    93.75%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-fall-right-move {
+    from { transform: translateX(0); }
+    to { transform: translateX(390px); }
+  }
+  @keyframes cowboy-fall-left-move {
+    from { transform: translateX(0); }
+    to { transform: translateX(-390px); }
+  }
+
+  @keyframes cowboy-fall-frames {
+    0% { background-position: 0 0; }
+    5.882353% { background-position: 33.333333% 0; }
+    11.764706% { background-position: 66.666667% 0; }
+    17.647059% { background-position: 100% 0; }
+    23.529412% { background-position: 0 25%; }
+    29.411765% { background-position: 33.333333% 25%; }
+    35.294118% { background-position: 66.666667% 25%; }
+    41.176471% { background-position: 100% 25%; }
+    47.058824% { background-position: 0 50%; }
+    52.941176% { background-position: 33.333333% 50%; }
+    58.823529% { background-position: 66.666667% 50%; }
+    64.705882% { background-position: 100% 50%; }
+    70.588235% { background-position: 0 75%; }
+    76.470588% { background-position: 33.333333% 75%; }
+    82.352941% { background-position: 66.666667% 75%; }
+    88.235294% { background-position: 100% 75%; }
+    94.117647%, 100% { background-position: 0 100%; }
+  }
+
+  @keyframes cowboy-fall-back-move-right {
+    from { transform: translateX(0); }
+    to { transform: translateX(390px); }
+  }
+  @keyframes cowboy-fall-back-move-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-390px); }
+  }
+
+  @keyframes cowboy-fall-back-frames {
+    0% { background-position: 0 0; }
+    4% { background-position: 25% 0; }
+    8% { background-position: 50% 0; }
+    12% { background-position: 75% 0; }
+    16% { background-position: 100% 0; }
+    20% { background-position: 0 25%; }
+    24% { background-position: 25% 25%; }
+    28% { background-position: 50% 25%; }
+    32% { background-position: 75% 25%; }
+    36% { background-position: 100% 25%; }
+    40% { background-position: 0 50%; }
+    44% { background-position: 25% 50%; }
+    48% { background-position: 50% 50%; }
+    52% { background-position: 75% 50%; }
+    56% { background-position: 100% 50%; }
+    60% { background-position: 0 75%; }
+    64% { background-position: 25% 75%; }
+    68% { background-position: 50% 75%; }
+    72% { background-position: 75% 75%; }
+    76% { background-position: 100% 75%; }
+    80% { background-position: 0 100%; }
+    84% { background-position: 25% 100%; }
+    88% { background-position: 50% 100%; }
+    92% { background-position: 75% 100%; }
+    96%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-getup-right {
+    0% { background-position: 0 0; }
+    7.142857% { background-position: 100% 0; }
+    14.285714% { background-position: 0 16.666667%; }
+    21.428571% { background-position: 100% 16.666667%; }
+    28.571429% { background-position: 0 33.333333%; }
+    35.714286% { background-position: 100% 33.333333%; }
+    42.857143% { background-position: 0 50%; }
+    50% { background-position: 100% 50%; }
+    57.142857% { background-position: 0 66.666667%; }
+    64.285714% { background-position: 100% 66.666667%; }
+    71.428571% { background-position: 0 83.333333%; }
+    78.571429% { background-position: 100% 83.333333%; }
+    85.714286% { background-position: 0 100%; }
+    92.857143%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-rotate {
+    0% { background-position: 0 0; }
+    11.111111% { background-position: 50% 0; }
+    22.222222% { background-position: 100% 0; }
+    33.333333% { background-position: 0 50%; }
+    44.444444% { background-position: 50% 50%; }
+    55.555556% { background-position: 100% 50%; }
+    66.666667% { background-position: 0 100%; }
+    77.777778% { background-position: 50% 100%; }
+    88.888889%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes horse-ride {
+    0% {
+      left: 0px;
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      left: calc(100% - 150px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes horse-frames {
+    0% { background-position: 0 0; }
+    12.5% { background-position: 100% 0; }
+    25% { background-position: 0 33.333333%; }
+    37.5% { background-position: 100% 33.333333%; }
+    50% { background-position: 0 66.666667%; }
+    62.5% { background-position: 100% 66.666667%; }
+    75% { background-position: 0 100%; }
+    87.5%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes cowboy-walking {
+    0% { background-position: 0 0; }
+    3.125% { background-position: 33.333333% 0; }
+    6.25% { background-position: 66.666667% 0; }
+    9.375% { background-position: 100% 0; }
+    12.5% { background-position: 0 14.285714%; }
+    15.625% { background-position: 33.333333% 14.285714%; }
+    18.75% { background-position: 66.666667% 14.285714%; }
+    21.875% { background-position: 100% 14.285714%; }
+    25% { background-position: 0 28.571429%; }
+    28.125% { background-position: 33.333333% 28.571429%; }
+    31.25% { background-position: 66.666667% 28.571429%; }
+    34.375% { background-position: 100% 28.571429%; }
+    37.5% { background-position: 0 42.857143%; }
+    40.625% { background-position: 33.333333% 42.857143%; }
+    43.75% { background-position: 66.666667% 42.857143%; }
+    46.875% { background-position: 100% 42.857143%; }
+    50% { background-position: 0 57.142857%; }
+    53.125% { background-position: 33.333333% 57.142857%; }
+    56.25% { background-position: 66.666667% 57.142857%; }
+    59.375% { background-position: 100% 57.142857%; }
+    62.5% { background-position: 0 71.428571%; }
+    65.625% { background-position: 33.333333% 71.428571%; }
+    68.75% { background-position: 66.666667% 71.428571%; }
+    71.875% { background-position: 100% 71.428571%; }
+    75% { background-position: 0 85.714286%; }
+    78.125% { background-position: 33.333333% 85.714286%; }
+    81.25% { background-position: 66.666667% 85.714286%; }
+    84.375% { background-position: 100% 85.714286%; }
+    87.5% { background-position: 0 100%; }
+    90.625% { background-position: 33.333333% 100%; }
+    93.75% { background-position: 66.666667% 100%; }
+    96.875% { background-position: 100% 100%; }
+    100% { background-position: 0 0; }
+  }
+
+  @keyframes cowboy-move {
+    from { left: 0; }
+    to { left: calc(100% - 48px); }
+  }
+
+  @keyframes cowboy-move-left {
+    from { right: 0; }
+    to { right: calc(100% - 48px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .background {
+      animation: none;
+    }
+
+    .cowboys_wrapper .cowboy::before {
+      animation: none;
+    }
+
+    .cowboys_wrapper .walking_right::before {
+      animation: none;
+    }
+
+    .cowboys_wrapper .walking_right {
+      animation: none;
+    }
+  }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.cowboy.staying_right.red {
+  &::before {
+    background-image: url('/images/staying_east_red.png');
+  }
+}
+.cowboy.staying_left.red {
+  &::before {
+    background-image: url('/images/staying_east_red.png');
+  }
+}
+.horsing_red {
+  background-image: url('/images/horse_red.png');
+}
+.cowboy.shoot_right.red::before {
+  background-image: url('/images/shoot_red.png');
+}
+.cowboy.shoot_left.red::before {
+  background-image: url('/images/shoot_red.png');
+}
+.cowboy.shoot_itself_right.red::before {
+  background-image: url('/images/shoot-itself_red.png');
+}
+.cowboy.shoot_itself_left.red::before {
+  background-image: url('/images/shoot-itself_red.png');
+}
+.cowboy.shoot_from_hip_right.red::before {
+  background-image: url('/images/shoot-from-hip_red.png');
+}
+.cowboy.shoot_from_hip_left.red::before {
+  background-image: url('/images/shoot-from-hip_red.png');
+}
+.cowboy.cowboy_rotate.red::before {
+  background-image: url('/images/rotate_red.png');
+}
+.cowboy.climbing.red::before {
+  background-image: url('/images/climbing_red.png');
+}
+.cowboy.fall_forvard_right.red::before {
+  background-image: url('/images/fallforvard_red.png');
+}
+.cowboy.fall_forvard_left.red::before {
+  background-image: url('/images/fallforvard_red.png');
+}
+.cowboy.fall_target.laying_right.red::before {
+  background-image: url('/images/laying_red.png');
+}
+.cowboy.fall_back_right.red::before {
+  background-image: url('/images/fallback_red.png');
+}
+.cowboy.fall_back_left.red::before {
+  background-image: url('/images/fallback_red.png');
+}
+.cowboy.laying_right.red::before {
+  background-image: url('/images/laying_red.png');
+}
+.cowboy.laying_left.red::before {
+  background-image: url('/images/laying_red.png');
+}
+.cowboy.rotate_target.staying_left.red::before {
+  background-image: url('/images/staying_east_red.png');
+}
+.cowboy.getup_right.red::before {
+  background-image: url('/images/gettingup_red.png');
+}
+.cowboy.getup_left.red::before {
+  background-image: url('/images/gettingup_red.png');
+}
+.cowboy.cowboy_shoot.red::before {
+  background-image: url('/images/shoot_red.png');
+}
+.walking_right.red {
+  &::before {
+    background-image: url('/images/walking_east_red.png');
+  }
+}
+.walking_left.red {
+  &::before {
+    background-image: url('/images/walking_east_red.png');
+  }
+}
+
+.cowboy.staying_right.yellow {
+  &::before {
+    background-image: url('/images/staying_east_yellow.png');
+  }
+}
+.cowboy.staying_left.yellow {
+  &::before {
+    background-image: url('/images/staying_east_yellow.png');
+  }
+}
+.horsing_yellow {
+  background-image: url('/images/horse_yellow.png');
+}
+.cowboy.shoot_right.yellow::before {
+  background-image: url('/images/shoot_yellow.png');
+}
+.cowboy.shoot_left.yellow::before {
+  background-image: url('/images/shoot_yellow.png');
+}
+.cowboy.shoot_itself_right.yellow::before {
+  background-image: url('/images/shoot-itself_yellow.png');
+}
+.cowboy.shoot_itself_left.yellow::before {
+  background-image: url('/images/shoot-itself_yellow.png');
+}
+.cowboy.shoot_from_hip_right.yellow::before {
+  background-image: url('/images/shoot-from-hip_yellow.png');
+}
+.cowboy.shoot_from_hip_left.yellow::before {
+  background-image: url('/images/shoot-from-hip_yellow.png');
+}
+.cowboy.cowboy_rotate.yellow::before {
+  background-image: url('/images/rotate_yellow.png');
+}
+.cowboy.climbing.yellow::before {
+  background-image: url('/images/climbing_yellow.png');
+}
+.cowboy.fall_forvard_right.yellow::before {
+  background-image: url('/images/fallforvard_yellow.png');
+}
+.cowboy.fall_forvard_left.yellow::before {
+  background-image: url('/images/fallforvard_yellow.png');
+}
+.cowboy.fall_target.laying_right.yellow::before {
+  background-image: url('/images/laying_yellow.png');
+}
+.cowboy.fall_back_right.yellow::before {
+  background-image: url('/images/fallback_yellow.png');
+}
+.cowboy.fall_back_left.yellow::before {
+  background-image: url('/images/fallback_yellow.png');
+}
+.cowboy.laying_right.yellow::before {
+  background-image: url('/images/laying_yellow.png');
+}
+.cowboy.laying_left.yellow::before {
+  background-image: url('/images/laying_yellow.png');
+}
+.cowboy.rotate_target.staying_left.yellow::before {
+  background-image: url('/images/staying_east_yellow.png');
+}
+.cowboy.getup_right.yellow::before {
+  background-image: url('/images/gettingup_yellow.png');
+}
+.cowboy.getup_left.yellow::before {
+  background-image: url('/images/gettingup_yellow.png');
+}
+.cowboy.cowboy_shoot.yellow::before {
+  background-image: url('/images/shoot_yellow.png');
+}
+.walking_right.yellow {
+  &::before {
+    background-image: url('/images/walking_east_yellow.png');
+  }
+}
+.walking_left.yellow {
+  &::before {
+    background-image: url('/images/walking_east_yellow.png');
+  }
+}
+.cowboy.staying_right.black {
+  &::before {
+    background-image: url('/images/staying_east_black.png');
+  }
+}
+.cowboy.staying_left.black {
+  &::before {
+    background-image: url('/images/staying_east_black.png');
+  }
+}
+.horsing_black {
+  background-image: url('/images/horse_black.png');
+}
+.cowboy.shoot_right.black::before {
+  background-image: url('/images/shoot_black.png');
+}
+.cowboy.shoot_left.black::before {
+  background-image: url('/images/shoot_black.png');
+}
+.cowboy.shoot_itself_right.black::before {
+  background-image: url('/images/shoot-itself_black.png');
+}
+.cowboy.shoot_itself_left.black::before {
+  background-image: url('/images/shoot-itself_black.png');
+}
+.cowboy.shoot_from_hip_right.black::before {
+  background-image: url('/images/shoot-from-hip_black.png');
+}
+.cowboy.shoot_from_hip_left.black::before {
+  background-image: url('/images/shoot-from-hip_black.png');
+}
+.cowboy.cowboy_rotate.black::before {
+  background-image: url('/images/rotate_black.png');
+}
+.cowboy.climbing.black::before {
+  background-image: url('/images/climbing_black.png');
+}
+.cowboy.fall_forvard_right.black::before {
+  background-image: url('/images/fallforvard_black.png');
+}
+.cowboy.fall_forvard_left.black::before {
+  background-image: url('/images/fallforvard_black.png');
+}
+.cowboy.fall_target.laying_right.black::before {
+  background-image: url('/images/laying_black.png');
+}
+.cowboy.fall_back_right.black::before {
+  background-image: url('/images/fallback_black.png');
+}
+.cowboy.fall_back_left.black::before {
+  background-image: url('/images/fallback_black.png');
+}
+.cowboy.laying_right.black::before {
+  background-image: url('/images/laying_black.png');
+}
+.cowboy.laying_left.black::before {
+  background-image: url('/images/laying_black.png');
+}
+.cowboy.rotate_target.staying_left.black::before {
+  background-image: url('/images/staying_east_black.png');
+}
+.cowboy.getup_right.black::before {
+  background-image: url('/images/gettingup_black.png');
+}
+.cowboy.getup_left.black::before {
+  background-image: url('/images/gettingup_black.png');
+}
+.cowboy.cowboy_shoot.black::before {
+  background-image: url('/images/shoot_black.png');
+}
+.walking_right.black {
+  &::before {
+    background-image: url('/images/walking_east_black.png');
+  }
+}
+.walking_left.black {
+  &::before {
+    background-image: url('/images/walking_east_black.png');
+  }
+}
+
+.cowboy.staying_right.green {
+  &::before {
+    background-image: url('/images/staying_east_green.png');
+  }
+}
+.cowboy.staying_left.green {
+  &::before {
+    background-image: url('/images/staying_east_green.png');
+  }
+}
+.horsing_green {
+  background-image: url('/images/horse_green.png');
+}
+.cowboy.shoot_right.green::before {
+  background-image: url('/images/shoot_green.png');
+}
+.cowboy.shoot_left.green::before {
+  background-image: url('/images/shoot_green.png');
+}
+.cowboy.shoot_itself_right.green::before {
+  background-image: url('/images/shoot-itself_green.png');
+}
+.cowboy.shoot_itself_left.green::before {
+  background-image: url('/images/shoot-itself_green.png');
+}
+.cowboy.shoot_from_hip_right.green::before {
+  background-image: url('/images/shoot-from-hip_green.png');
+}
+.cowboy.shoot_from_hip_left.green::before {
+  background-image: url('/images/shoot-from-hip_green.png');
+}
+.cowboy.cowboy_rotate.green::before {
+  background-image: url('/images/rotate_green.png');
+}
+.cowboy.climbing.green::before {
+  background-image: url('/images/climbing_green.png');
+}
+.cowboy.fall_forvard_right.green::before {
+  background-image: url('/images/fallforvard_green.png');
+}
+.cowboy.fall_forvard_left.green::before {
+  background-image: url('/images/fallforvard_green.png');
+}
+.cowboy.fall_target.laying_right.green::before {
+  background-image: url('/images/laying_green.png');
+}
+.cowboy.fall_back_right.green::before {
+  background-image: url('/images/fallback_green.png');
+}
+.cowboy.fall_back_left.green::before {
+  background-image: url('/images/fallback_green.png');
+}
+.cowboy.laying_right.green::before {
+  background-image: url('/images/laying_green.png');
+}
+.cowboy.laying_left.green::before {
+  background-image: url('/images/laying_green.png');
+}
+.cowboy.rotate_target.staying_left.green::before {
+  background-image: url('/images/staying_east_green.png');
+}
+.cowboy.getup_right.green::before {
+  background-image: url('/images/gettingup_green.png');
+}
+.cowboy.getup_left.green::before {
+  background-image: url('/images/gettingup_green.png');
+}
+.cowboy.cowboy_shoot.green::before {
+  background-image: url('/images/shoot_green.png');
+}
+.walking_right.green {
+  &::before {
+    background-image: url('/images/walking_east_green.png');
+  }
+}
+.walking_left.green {
+  &::before {
+    background-image: url('/images/walking_east_green.png');
+  }
+}
+
+.cowboy.staying_right.blue {
+  &::before {
+    background-image: url('/images/staying_east_blue.png');
+  }
+}
+.cowboy.staying_left.blue {
+  &::before {
+    background-image: url('/images/staying_east_blue.png');
+  }
+}
+.horsing_blue {
+  background-image: url('/images/horse_blue.png');
+}
+.cowboy.shoot_right.blue::before {
+  background-image: url('/images/shoot_blue.png');
+}
+.cowboy.shoot_left.blue::before {
+  background-image: url('/images/shoot_blue.png');
+}
+.cowboy.shoot_itself_right.blue::before {
+  background-image: url('/images/shoot-itself_blue.png');
+}
+.cowboy.shoot_itself_left.blue::before {
+  background-image: url('/images/shoot-itself_blue.png');
+}
+.cowboy.shoot_from_hip_right.blue::before {
+  background-image: url('/images/shoot-from-hip_blue.png');
+}
+.cowboy.shoot_from_hip_left.blue::before {
+  background-image: url('/images/shoot-from-hip_blue.png');
+}
+.cowboy.cowboy_rotate.blue::before {
+  background-image: url('/images/rotate_blue.png');
+}
+.cowboy.climbing.blue::before {
+  background-image: url('/images/climbing_blue.png');
+}
+.cowboy.fall_forvard_right.blue::before {
+  background-image: url('/images/fallforvard_blue.png');
+}
+.cowboy.fall_forvard_left.blue::before {
+  background-image: url('/images/fallforvard_blue.png');
+}
+.cowboy.fall_target.laying_right.blue::before {
+  background-image: url('/images/laying_blue.png');
+}
+.cowboy.fall_back_right.blue::before {
+  background-image: url('/images/fallback_blue.png');
+}
+.cowboy.fall_back_left.blue::before {
+  background-image: url('/images/fallback_blue.png');
+}
+.cowboy.laying_right.blue::before {
+  background-image: url('/images/laying_blue.png');
+}
+.cowboy.laying_left.blue::before {
+  background-image: url('/images/laying_blue.png');
+}
+.cowboy.rotate_target.staying_left.blue::before {
+  background-image: url('/images/staying_east_blue.png');
+}
+.cowboy.getup_right.blue::before {
+  background-image: url('/images/gettingup_blue.png');
+}
+.cowboy.getup_left.blue::before {
+  background-image: url('/images/gettingup_blue.png');
+}
+.cowboy.cowboy_shoot.blue::before {
+  background-image: url('/images/shoot_blue.png');
+}
+.walking_right.blue {
+  &::before {
+    background-image: url('/images/walking_east_blue.png');
+  }
+}
+.walking_left.blue {
+  &::before {
+    background-image: url('/images/walking_east_blue.png');
+  }
+}
+
+.cowboy.staying_right.white {
+  &::before {
+    background-image: url('/images/staying_east_white.png');
+  }
+}
+.cowboy.staying_left.white {
+  &::before {
+    background-image: url('/images/staying_east_white.png');
+  }
+}
+.horsing_white {
+  background-image: url('/images/horse_white.png');
+}
+.cowboy.shoot_right.white::before {
+  background-image: url('/images/shoot_white.png');
+}
+.cowboy.shoot_left.white::before {
+  background-image: url('/images/shoot_white.png');
+}
+.cowboy.shoot_itself_right.white::before {
+  background-image: url('/images/shoot-itself_white.png');
+}
+.cowboy.shoot_itself_left.white::before {
+  background-image: url('/images/shoot-itself_white.png');
+}
+.cowboy.shoot_from_hip_right.white::before {
+  background-image: url('/images/shoot-from-hip_white.png');
+}
+.cowboy.shoot_from_hip_left.white::before {
+  background-image: url('/images/shoot-from-hip_white.png');
+}
+.cowboy.cowboy_rotate.white::before {
+  background-image: url('/images/rotate_white.png');
+}
+.cowboy.climbing.white::before {
+  background-image: url('/images/climbing_white.png');
+}
+.cowboy.fall_forvard_right.white::before {
+  background-image: url('/images/fallforvard_white.png');
+}
+.cowboy.fall_forvard_left.white::before {
+  background-image: url('/images/fallforvard_white.png');
+}
+.cowboy.fall_target.laying_right.white::before {
+  background-image: url('/images/laying_white.png');
+}
+.cowboy.fall_back_right.white::before {
+  background-image: url('/images/fallback_white.png');
+}
+.cowboy.fall_back_left.white::before {
+  background-image: url('/images/fallback_white.png');
+}
+.cowboy.laying_right.white::before {
+  background-image: url('/images/laying_white.png');
+}
+.cowboy.laying_left.white::before {
+  background-image: url('/images/laying_white.png');
+}
+.cowboy.rotate_target.staying_left.white::before {
+  background-image: url('/images/staying_east_white.png');
+}
+.cowboy.getup_right.white::before {
+  background-image: url('/images/gettingup_white.png');
+}
+.cowboy.getup_left.white::before {
+  background-image: url('/images/gettingup_white.png');
+}
+.cowboy.cowboy_shoot.white::before {
+  background-image: url('/images/shoot_white.png');
+}
+.walking_right.white {
+  &::before {
+    background-image: url('/images/walking_east_white.png');
+  }
+}
+.walking_left.white {
+  &::before {
+    background-image: url('/images/walking_east_white.png');
+  }
+}
+
+.cowboy.staying_right.purple {
+  &::before {
+    background-image: url('/images/staying_east_purple.png');
+  }
+}
+.cowboy.staying_left.purple {
+  &::before {
+    background-image: url('/images/staying_east_purple.png');
+  }
+}
+.horsing_purple {
+  background-image: url('/images/horse_purple.png');
+}
+.cowboy.shoot_right.purple::before {
+  background-image: url('/images/shoot_purple.png');
+}
+.cowboy.shoot_left.purple::before {
+  background-image: url('/images/shoot_purple.png');
+}
+.cowboy.shoot_itself_right.purple::before {
+  background-image: url('/images/shoot-itself_purple.png');
+}
+.cowboy.shoot_itself_left.purple::before {
+  background-image: url('/images/shoot-itself_purple.png');
+}
+.cowboy.shoot_from_hip_right.purple::before {
+  background-image: url('/images/shoot-from-hip_purple.png');
+}
+.cowboy.shoot_from_hip_left.purple::before {
+  background-image: url('/images/shoot-from-hip_purple.png');
+}
+.cowboy.cowboy_rotate.purple::before {
+  background-image: url('/images/rotate_purple.png');
+}
+.cowboy.climbing.purple::before {
+  background-image: url('/images/climbing_purple.png');
+}
+.cowboy.fall_forvard_right.purple::before {
+  background-image: url('/images/fallforvard_purple.png');
+}
+.cowboy.fall_forvard_left.purple::before {
+  background-image: url('/images/fallforvard_purple.png');
+}
+.cowboy.fall_target.laying_right.purple::before {
+  background-image: url('/images/laying_purple.png');
+}
+.cowboy.fall_back_right.purple::before {
+  background-image: url('/images/fallback_purple.png');
+}
+.cowboy.fall_back_left.purple::before {
+  background-image: url('/images/fallback_purple.png');
+}
+.cowboy.laying_right.purple::before {
+  background-image: url('/images/laying_purple.png');
+}
+.cowboy.laying_left.purple::before {
+  background-image: url('/images/laying_purple.png');
+}
+.cowboy.rotate_target.staying_left.purple::before {
+  background-image: url('/images/staying_east_purple.png');
+}
+.cowboy.getup_right.purple::before {
+  background-image: url('/images/gettingup_purple.png');
+}
+.cowboy.getup_left.purple::before {
+  background-image: url('/images/gettingup_purple.png');
+}
+.cowboy.cowboy_shoot.purple::before {
+  background-image: url('/images/shoot_purple.png');
+}
+.walking_right.purple {
+  &::before {
+    background-image: url('/images/walking_east_purple.png');
+  }
+}
+.walking_left.purple {
+  &::before {
+    background-image: url('/images/walking_east_purple.png');
+  }
+}
+
+.cowboy.staying_right.brown {
+  &::before {
+    background-image: url('/images/staying_east_brown.png');
+  }
+}
+.cowboy.staying_left.brown {
+  &::before {
+    background-image: url('/images/staying_east_brown.png');
+  }
+}
+.horsing_brown {
+  background-image: url('/images/horse_brown.png');
+}
+.cowboy.shoot_right.brown::before {
+  background-image: url('/images/shoot_brown.png');
+}
+.cowboy.shoot_left.brown::before {
+  background-image: url('/images/shoot_brown.png');
+}
+.cowboy.shoot_itself_right.brown::before {
+  background-image: url('/images/shoot-itself_brown.png');
+}
+.cowboy.shoot_itself_left.brown::before {
+  background-image: url('/images/shoot-itself_brown.png');
+}
+.cowboy.shoot_from_hip_right.brown::before {
+  background-image: url('/images/shoot-from-hip_brown.png');
+}
+.cowboy.shoot_from_hip_left.brown::before {
+  background-image: url('/images/shoot-from-hip_brown.png');
+}
+.cowboy.cowboy_rotate.brown::before {
+  background-image: url('/images/rotate_brown.png');
+}
+.cowboy.climbing.brown::before {
+  background-image: url('/images/climbing_brown.png');
+}
+.cowboy.fall_forvard_right.brown::before {
+  background-image: url('/images/fallforvard_brown.png');
+}
+.cowboy.fall_forvard_left.brown::before {
+  background-image: url('/images/fallforvard_brown.png');
+}
+.cowboy.fall_target.laying_right.brown::before {
+  background-image: url('/images/laying_brown.png');
+}
+.cowboy.fall_back_right.brown::before {
+  background-image: url('/images/fallback_brown.png');
+}
+.cowboy.fall_back_left.brown::before {
+  background-image: url('/images/fallback_brown.png');
+}
+.cowboy.laying_right.brown::before {
+  background-image: url('/images/laying_brown.png');
+}
+.cowboy.laying_left.brown::before {
+  background-image: url('/images/laying_brown.png');
+}
+.cowboy.rotate_target.staying_left.brown::before {
+  background-image: url('/images/staying_east_brown.png');
+}
+.cowboy.getup_right.brown::before {
+  background-image: url('/images/gettingup_brown.png');
+}
+.cowboy.getup_left.brown::before {
+  background-image: url('/images/gettingup_brown.png');
+}
+.cowboy.cowboy_shoot.brown::before {
+  background-image: url('/images/shoot_brown.png');
+}
+.walking_right.brown {
+  &::before {
+    background-image: url('/images/walking_east_brown.png');
+  }
+}
+.walking_left.brown {
+  &::before {
+    background-image: url('/images/walking_east_brown.png');
+  }
+}
+
+/* Спуск (jumping_down) — цветовые варианты (спрайт slazdown). */
+.cowboy.jumping_down.red::before { background-image: url('/images/slazdown_red.png'); }
+.cowboy.jumping_down.yellow::before { background-image: url('/images/slazdown_yellow.png'); }
+.cowboy.jumping_down.black::before { background-image: url('/images/slazdown_black.png'); }
+.cowboy.jumping_down.green::before { background-image: url('/images/slazdown_green.png'); }
+.cowboy.jumping_down.blue::before { background-image: url('/images/slazdown_blue.png'); }
+.cowboy.jumping_down.white::before { background-image: url('/images/slazdown_white.png'); }
+.cowboy.jumping_down.purple::before { background-image: url('/images/slazdown_purple.png'); }
+.cowboy.jumping_down.brown::before { background-image: url('/images/slazdown_brown.png'); }
+
+/* Ходьба влево (walking_left) — цветовые варианты (иначе спрайт всегда красный). */
+.walking_left.red { &::before { background-image: url('/images/walking_east_red.png'); } }
+.walking_left.yellow { &::before { background-image: url('/images/walking_east_yellow.png'); } }
+.walking_left.black { &::before { background-image: url('/images/walking_east_black.png'); } }
+.walking_left.green { &::before { background-image: url('/images/walking_east_green.png'); } }
+.walking_left.blue { &::before { background-image: url('/images/walking_east_blue.png'); } }
+.walking_left.white { &::before { background-image: url('/images/walking_east_white.png'); } }
+.walking_left.purple { &::before { background-image: url('/images/walking_east_purple.png'); } }
+.walking_left.brown { &::before { background-image: url('/images/walking_east_brown.png'); } }

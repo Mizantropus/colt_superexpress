@@ -1,0 +1,75 @@
+doctype html
+html(lang="ru")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="theme-color" content="#ffffff")
+    title Colt Super Express Sprites
+    link(rel="stylesheet" href="style.css")
+    script(src="train-drag.js" defer)
+  body
+    main
+      h1 Colt Super Express Sprites
+      .music_player
+        audio#music_audio(preload="auto" hidden)
+        button#music_toggle(type="button" aria-label="Отключить звук" aria-pressed="false" data-muted="false")
+          svg(viewBox="0 0 24 24" aria-hidden="true")
+            path(d="M3 9v6h4l5 4V5L7 9H3z")
+            path.sound_waves(d="M16 9a5 5 0 0 1 0 6M19 5a10 10 0 0 1 0 14")
+            path.mute_mark(d="m16 9 5 6m0-6-5 6")
+        .volume_panel
+          //- label(for="music_volume") Громкость
+          input#music_volume(type="range" min="0" max="100" value="20" aria-label="Громкость музыки")
+      .background_wrapper
+        .background
+          img(src="background.jpg" alt="")
+          img(src="background.jpg" alt="")
+          img(src="background.jpg" alt="")
+          img(src="background.jpg" alt="")
+        .train_wrapper
+          .vagon
+          .vagon
+          .vagon
+          .vagon
+          .vagon
+          .vagon
+          .vagon
+          .vagon
+          .lokomotive
+            .wheel
+          .delorian
+            .wheel_front
+            .wheel_back
+          .cowboys_wrapper
+            .cowboy.red.staying_right
+            .cowboy.red.staying_left
+            .cowboy.red.getup_right
+            .cowboy.red.getup_left
+            .cowboy.red.shoot_right
+            .cowboy.red.shoot_left
+            .cowboy.red.walking_right
+            .cowboy.red.walking_left
+            .cowboy.red.climbing
+            .cowboy.red.laying_right
+            .cowboy.red.laying_left
+            .cowboy.red.fall_forvard_right
+            .cowboy.red.fall_forvard_left
+            .cowboy.red.fall_back_right
+            .cowboy.red.fall_back_left
+            .cowboy.red.shoot_from_hip_right
+            .cowboy.red.shoot_from_hip_left
+            .cowboy.red.shoot_itself_right
+            .cowboy.red.shoot_itself_left
+        .hobby_horsing_wrapper
+          .hobby_horsing.horsing_red
+      .mover_wrapper
+        .mover(role="slider" tabindex="0" aria-label="Положение поезда" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50")
+      //- button#shoot(type="button") Выстрелить
+      //- button#ride(type="button") Скакать
+      //- button#shoot_itself(type="button") Выстрелить в себя
+      //- button#shoot_from_hip(type="button") Стрелять от бедра
+      //- button#climbing(type="button") Карабкаться
+      //- button#fall_forvard(type="button") Упасть лицом вперёд
+      //- button#fall_back(type="button") Упасть лицом назад
+      //- button#gettingup(type="button") Подняться
+      //- button#rotate(type="button") Повернуться
