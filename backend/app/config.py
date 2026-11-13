@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # CORS — перечисление origin через запятую (строка, разбивается в свойстве)
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://colt-super-express.ru,https://colt-super-express.ru,http://212.193.63.174,http://localhost:5173"
 
     # Инфраструктура
     database_url: str = "postgresql+asyncpg://colt:colt@localhost:5432/colt_super_express"
