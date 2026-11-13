@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { preloadGameAssets } from '@/game/preload'
 import { useConnectionStore } from '@/stores/connection'
 import { useRoomStore } from '@/stores/room'
 
@@ -19,6 +20,11 @@ watch(
     if (s === 'playing' || s === 'finished') router.push('/game')
   },
 )
+
+onMounted(() => {
+  // Фоновая предзагрузка спрайтов и карт — чтобы не подгружать во время игры.
+  preloadGameAssets()
+})
 
 function onCreate() {
   room.createRoom(name.value || 'Игрок', Number(maxPlayers.value))

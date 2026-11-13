@@ -44,6 +44,7 @@ class ClientMessage:
     START_GAME = "start_game"
     SUBMIT_PLAN = "submit_plan"
     ADD_BOT = "add_bot"
+    CONFIRM_ROUND = "confirm_round"
 
 
 class ServerMessage:

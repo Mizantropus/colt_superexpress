@@ -47,6 +47,8 @@ class Room:
     players: dict[str, Player] = field(default_factory=dict)  # в порядке посадки
     game_state: GameState | None = None
     planning_deadline: float | None = None
+    # Игроки, закрывшие окошко результата раунда (для старта следующего раунда).
+    round_confirmations: set[str] = field(default_factory=set)
 
     @property
     def is_empty(self) -> bool:

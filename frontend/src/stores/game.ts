@@ -150,7 +150,7 @@ export const useGameStore = defineStore('game', () => {
     }))
   })
 
-  function showRoundResult(): Promise<void> {
+  async function showRoundResult(): Promise<void> {
     const eliminated = roundEliminatedIds.value.map((pid) => {
       const b = banditById(pid)
       return { name: b?.name ?? pid, color: colorForPlayer(pid), colorName: colorNameFor(pid) }
@@ -159,11 +159,14 @@ export const useGameStore = defineStore('game', () => {
     const reward = rid
       ? { name: banditById(rid)?.name ?? rid, color: colorForPlayer(rid), colorName: colorNameFor(rid) }
       : null
-    if (eliminated.length === 0 && !reward) return Promise.resolve()
-    roundResult.value = { eliminated, reward }
-    return new Promise((resolve) => {
-      roundResultResolve = resolve
-    })
+    if (eliminated.length > 0 || reward) {
+      roundResult.value = { eliminated, reward }
+      await new Promise<void>((resolve) => {
+        roundResultResolve = resolve
+      })
+    }
+    // Сообщаем серверу, что окошко результата закрыто (или его не было).
+    connection.send('confirm_round')
   }
 
   function dismissRoundResult() {

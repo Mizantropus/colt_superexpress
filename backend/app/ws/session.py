@@ -9,6 +9,7 @@ import time
 from app.game.bots import choose_plan
 from app.game.engine import resolve_round
 from app.game.planning import all_plans_submitted, start_planning, start_robbery, submit_plan
+from app.game.round_end import begin_next_round
 from app.game.setup import setup_game
 from app.game.state import GameEvent, GameState, Phase
 from app.ws.rooms import Room, RoomStatus
@@ -105,6 +106,15 @@ def run_robbery(room: Room) -> list[GameEvent]:
     return [state.record_event("robbery_started")] + resolve_round(state)
 
 
+async def wait_for_round_confirm(room: Room) -> None:
+    """Ждёт, пока все подключённые игроки-люди закроют окошко результата раунда."""
+    expected = {p.id for p in room.players.values() if not p.is_bot and p.connected}
+    while True:
+        if expected.issubset(room.round_confirmations):
+            return
+        await asyncio.sleep(0.05)
+
+
 async def run_game(
     room: Room,
     on_event,
@@ -125,12 +135,7 @@ async def run_game(
             await on_event(room.game_state.record_event("planning_timed_out"))
 
         events = run_robbery(room)
-        now = time.time()
         for event in events:
-            if event.type == "round_started":
-                deadline = now + planning_timeout + step_delay
-                event.data["planning_deadline"] = deadline
-                room.planning_deadline = deadline
             await on_event(event)
             if step_delay:
                 await asyncio.sleep(step_delay)
@@ -141,3 +146,15 @@ async def run_game(
         if room.game_state.phase is Phase.FINISHED:
             room.status = RoomStatus.FINISHED
             break
+
+        # Ждём, пока все игроки закроют окошко результата раунда,
+        # и только потом начинаем следующий раунд (таймер стартует с этого момента).
+        room.round_confirmations.clear()
+        await wait_for_round_confirm(room)
+        room.round_confirmations.clear()
+
+        event = begin_next_round(room.game_state)
+        deadline = time.time() + planning_timeout + step_delay
+        event.data["planning_deadline"] = deadline
+        room.planning_deadline = deadline
+        await on_event(event)

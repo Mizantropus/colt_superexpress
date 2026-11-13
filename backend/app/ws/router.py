@@ -114,6 +114,10 @@ async def _handle_message(player_id, manager, rooms, bus, tokens, message: dict)
         await _add_bot(player_id, manager, rooms, bus)
         return
 
+    if msg_type == protocol.ClientMessage.CONFIRM_ROUND:
+        await _confirm_round(player_id, manager, rooms)
+        return
+
     await manager.send_to_player(
         player_id,
         protocol.make_message(
@@ -425,6 +429,15 @@ async def _add_bot(player_id, manager, rooms, bus) -> None:
         player_name=bot.name,
         is_bot=True,
     ))
+
+
+async def _confirm_round(player_id, manager, rooms) -> None:
+    """Игрок закрыл всплывающее окошко результата раунда."""
+    code = manager.room_of(player_id)
+    room = rooms.get(code) if code else None
+    if room is None or room.status is not RoomStatus.PLAYING:
+        return
+    room.round_confirmations.add(player_id)
 
 
 async def _game_loop(room, bus, code) -> None:

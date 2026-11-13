@@ -50,15 +50,16 @@ def end_round(state: GameState) -> list[GameEvent]:
         state.phase = Phase.FINISHED
         state.winner_id = winner_id
         events.append(state.record_event("game_finished", winner_id=winner_id))
-        return events
 
-    # 5. Новый раунд: смена первого игрока и фаза планирования.
+    return events
+
+
+def begin_next_round(state: GameState) -> GameEvent:
+    """Начинает следующий раунд: смена первого игрока и фаза планирования."""
     state.round_number += 1
     state.first_player_id = state.next_player_id(state.first_player_id)
     start_planning(state)
-    events.append(state.record_event("round_started", first_player_id=state.first_player_id))
-
-    return events
+    return state.record_event("round_started", first_player_id=state.first_player_id)
 
 
 def _closest_to_detached(state: GameState):
