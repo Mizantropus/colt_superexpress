@@ -350,7 +350,7 @@ async def _start_game(player_id, manager, rooms, bus, message: dict) -> None:
         planning_deadline=room.planning_deadline,
     ))
 
-    task = asyncio.create_task(_game_loop(room, bus, code))
+    task = asyncio.create_task(_game_loop(room, manager, bus, code))
     _game_tasks.add(task)
     task.add_done_callback(_game_tasks.discard)
 
@@ -440,7 +440,7 @@ async def _confirm_round(player_id, manager, rooms) -> None:
     room.round_confirmations.add(player_id)
 
 
-async def _game_loop(room, bus, code) -> None:
+async def _game_loop(room, manager, bus, code) -> None:
     """Фоновая задача: полный цикл партии (планирование -> ограбление -> ...)."""
 
     async def on_event(event) -> None:
@@ -450,6 +450,11 @@ async def _game_loop(room, bus, code) -> None:
         await run_game(room, on_event, get_settings().planning_timeout_seconds, step_delay=get_settings().step_delay_seconds)
     except Exception:
         logger.exception("Ошибка игрового цикла комнаты %s", code)
+    finally:
+        # После завершения партии сбрасываем членство игроков,
+        # чтобы они могли сразу создать/войти в новую комнату.
+        for player_id in room.players:
+            manager.clear_room(player_id)
 
 
 def _event_payload(event) -> dict:

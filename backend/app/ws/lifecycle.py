@@ -41,9 +41,10 @@ def reconnect_player(room: Room, player_id: str) -> bool:
     return True
 
 
-def cleanup_rooms(registry: RoomRegistry, now: float | None = None) -> list[str]:
+def cleanup_rooms(registry: RoomRegistry, manager=None, now: float | None = None) -> list[str]:
     """Удаляет отключившихся сверх grace-периода игроков и пустые комнаты.
 
+    Также сбрасывает членство удалённых игроков в менеджере подключений.
     Возвращает коды удалённых комнат.
     """
     now = now if now is not None else time.time()
@@ -57,6 +58,8 @@ def cleanup_rooms(registry: RoomRegistry, now: float | None = None) -> list[str]
                 and (now - player.disconnected_at) > RECONNECT_GRACE_SECONDS
             ):
                 leave_room(room, player_id)
+                if manager is not None:
+                    manager.clear_room(player_id)
         if room.is_empty:
             registry.remove(room.code)
             removed.append(room.code)

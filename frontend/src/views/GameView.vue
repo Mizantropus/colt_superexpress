@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import CardReveal from '@/components/game/CardReveal.vue'
 import GameOverPanel from '@/components/game/GameOverPanel.vue'
@@ -19,6 +20,15 @@ const cowboys = ref<HTMLDivElement | null>(null)
 
 const gameStore = useGameStore()
 const room = useRoomStore()
+const router = useRouter()
+
+function leaveGame() {
+  // После завершения партии сервер уже сбросил членство — просто уходим.
+  if (gameStore.phase !== 'finished') {
+    room.leaveRoom()
+  }
+  router.push('/')
+}
 
 const myMoney = computed(() => (room.myPlayerId ? (gameStore.money[room.myPlayerId] ?? 0) : 0))
 
@@ -275,10 +285,30 @@ onBeforeUnmount(() => {
 
     <div class="ornament"></div>
 
+    <button class="leave-game" type="button" @click="leaveGame">Покинуть игру</button>
+
   </div>
 </template>
 
 <style scoped>
+.leave-game {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 60;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.leave-game:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
 .cowboy {
   transition: left 0.4s ease, bottom 0.4s ease, opacity 0.3s ease;
 }

@@ -27,6 +27,7 @@ export const useRoomStore = defineStore('room', () => {
   const myPlayerId = ref<string | null>(null)
   const myToken = ref<string | null>(null)
   const error = ref<string | null>(null)
+  const errorCode = ref<string | null>(null)
 
   const isHost = computed(() => myPlayerId.value !== null && myPlayerId.value === hostId.value)
   const canStart = computed(
@@ -123,6 +124,7 @@ export const useRoomStore = defineStore('room', () => {
     })
 
     connection.on('error', (m: ServerMessage) => {
+      errorCode.value = String(m.code ?? '')
       error.value = String(m.message ?? 'Ошибка')
     })
   }
@@ -150,7 +152,7 @@ export const useRoomStore = defineStore('room', () => {
   }
 
   return {
-    roomCode, players, hostId, maxPlayers, status, myPlayerId, myToken, error,
+    roomCode, players, hostId, maxPlayers, status, myPlayerId, myToken, error, errorCode,
     isHost, canStart,
     setupListeners, reset, createRoom, joinRoom, leaveRoom, startGame, addBot,
   }

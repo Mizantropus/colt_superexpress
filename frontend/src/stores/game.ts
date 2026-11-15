@@ -363,6 +363,12 @@ export const useGameStore = defineStore('game', () => {
         phase.value = 'planning'
         roundNumber.value = Number(event.round_number)
         firstPlayerId.value = event.first_player_id == null ? null : String(event.first_player_id)
+        // Перезапуск таймера перед новым раундом.
+        if (event.planning_deadline != null) {
+          setPlanningDeadline(Number(event.planning_deadline))
+        } else {
+          planningDeadline.value = 0
+        }
         break
       case 'turned_around':
         if (pid) patchBandit(pid, { direction: String(event.direction) as BanditState['direction'] })

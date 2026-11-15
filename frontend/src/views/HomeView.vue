@@ -33,6 +33,10 @@ function onCreate() {
 function onJoin() {
   room.joinRoom(joinCode.value.trim().toUpperCase(), name.value || 'Игрок')
 }
+
+function onLeaveAfterError() {
+  room.leaveRoom()
+}
 </script>
 
 <template>
@@ -99,7 +103,17 @@ function onJoin() {
         <button class="btn" type="button" @click="onJoin">Войти</button>
       </section>
 
-      <p v-if="room.error" class="lobby__error">{{ room.error }}</p>
+      <div v-if="room.error" class="lobby__error">
+        <span>{{ room.error }}</span>
+        <button
+          v-if="room.errorCode === 'already_in_room'"
+          class="btn btn--ghost btn--small"
+          type="button"
+          @click="onLeaveAfterError"
+        >
+          Покинуть
+        </button>
+      </div>
     </div>
 
     <div v-else class="panel lobby__room">

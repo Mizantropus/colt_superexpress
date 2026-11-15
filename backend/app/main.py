@@ -33,7 +33,7 @@ async def _room_cleanup_loop(app: FastAPI) -> None:
     """Периодически чистит пустые и зависшие комнаты."""
     while True:
         await asyncio.sleep(ROOM_CLEANUP_INTERVAL)
-        removed = cleanup_rooms(app.state.room_registry)
+        removed = cleanup_rooms(app.state.room_registry, app.state.connection_manager)
         if removed:
             logger.info("Очистка комнат, удалены: %s", removed)
 
