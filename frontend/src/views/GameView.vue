@@ -30,6 +30,37 @@ function leaveGame() {
   router.push('/')
 }
 
+// Масштаб всей игры — аналог зума браузера (Ctrl + колесо):
+// мультипликативный шаг, диапазон от -50% до +50%.
+const scale = ref(1)
+const scaleOpen = ref(false)
+const SCALE_FACTOR = 1.05
+const SCALE_MIN = 0.5
+const SCALE_MAX = 1.5
+
+const canZoomIn = computed(() => scale.value < SCALE_MAX - 1e-6)
+const canZoomOut = computed(() => scale.value > SCALE_MIN + 1e-6)
+
+function zoomIn() {
+  if (canZoomIn.value) scale.value = Math.min(SCALE_MAX, +(scale.value * SCALE_FACTOR).toFixed(4))
+}
+
+function zoomOut() {
+  if (canZoomOut.value) scale.value = Math.max(SCALE_MIN, +(scale.value / SCALE_FACTOR).toFixed(4))
+}
+
+// Применяем масштаб ко всей странице (аналог зума браузера).
+watch(scale, (v) => {
+  document.documentElement.style.zoom = String(v)
+  // После рефлоу пересчитываем JS-замеры (clientWidth/offsetWidth изменились).
+  requestAnimationFrame(() => {
+    if (viewport.value) {
+      gameStore.setViewportWidth(viewport.value.clientWidth)
+      updatePositions()
+    }
+  })
+}, { immediate: true })
+
 const myMoney = computed(() => (room.myPlayerId ? (gameStore.money[room.myPlayerId] ?? 0) : 0))
 
 const wagonsReversed = computed(() =>
@@ -173,6 +204,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize)
+  document.documentElement.style.zoom = ''
 })
 </script>
 
@@ -288,9 +320,79 @@ onBeforeUnmount(() => {
     <button class="leave-game" type="button" @click="leaveGame">Покинуть игру</button>
 
   </div>
+
+  <div class="scale-control" :style="{ zoom: 1 / scale }">
+    <button class="scale-control__toggle" type="button" @click="scaleOpen = !scaleOpen">🔍</button>
+    <div class="scale-control__zoom" :class="{ 'scale-control__zoom--open': scaleOpen }">
+      <button class="scale-control__btn" type="button" :disabled="!canZoomIn" @click="zoomIn">+</button>
+      <button class="scale-control__btn" type="button" :disabled="!canZoomOut" @click="zoomOut">−</button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+.game {
+  width: 100%;
+  height: 100%;
+}
+
+.scale-control {
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+}
+
+.scale-control__toggle {
+  position: relative;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.15rem;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+
+.scale-control__zoom {
+  position: absolute;
+  right: 52px;
+  top: 0;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transform: translateX(52px);
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.scale-control__zoom--open {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.scale-control__btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+
+.scale-control__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .leave-game {
   position: fixed;
   bottom: 16px;
