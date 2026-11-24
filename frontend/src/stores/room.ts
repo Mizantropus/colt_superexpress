@@ -100,8 +100,12 @@ export const useRoomStore = defineStore('room', () => {
     })
 
     connection.on('player_joined', (m: ServerMessage) => {
+      const pid = String(m.player_id)
+      // Игрок уже есть в списке (например, присоединившийся сам получил полный
+      // список в `joined`, а потом ещё и broadcast `player_joined`) — не дублируем.
+      if (players.value.some((p) => p.id === pid)) return
       players.value.push({
-        id: String(m.player_id),
+        id: pid,
         name: String(m.player_name ?? 'Игрок'),
         isHost: false,
         isBot: Boolean(m.is_bot),

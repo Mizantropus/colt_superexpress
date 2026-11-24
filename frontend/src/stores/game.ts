@@ -737,6 +737,8 @@ export const useGameStore = defineStore('game', () => {
         await sleep(1200)
         applyEvent(event)
         detachingWagon.value = false
+        // В конце раунда центрируем поезд (и движок .mover).
+        setProgress(0.5)
         await showRoundResult()
       }
     }

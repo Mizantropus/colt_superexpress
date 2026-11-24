@@ -17,7 +17,9 @@ const winner = computed(() => {
 const ranked = computed(() => [...game.bandits].sort((a, b) => b.money - a.money))
 
 function onExit() {
-  room.leaveRoom()
+  // Комната после партии уже не нужна — просто сбрасываем локальное состояние
+  // (leave не шлём: сервер уже сбросил членство, иначе будет ошибка «не в комнате»).
+  room.reset()
   game.reset()
   router.push('/')
 }
