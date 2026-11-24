@@ -737,6 +737,9 @@ export const useGameStore = defineStore('game', () => {
         await sleep(1200)
         applyEvent(event)
         detachingWagon.value = false
+        // Ждём, пока отцепленный вагон исчезнет из DOM (ширина поезда обновится),
+        // иначе центрирование посчитается по старой ширине.
+        await nextTick()
         // В конце раунда центрируем поезд (и движок .mover).
         setProgress(0.5)
         await showRoundResult()
