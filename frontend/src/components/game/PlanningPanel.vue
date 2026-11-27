@@ -172,6 +172,7 @@ function angleOf(index: number, total: number): number {
   bottom: 0;
   z-index: 20;
   height: calc(100vh - 500px);
+  height: calc(100dvh - 500px);
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: "players cards info";
@@ -330,6 +331,9 @@ function angleOf(index: number, total: number): number {
 .card {
   display: block;
   width: clamp(96px, 13vh, 126px);
+  /* Ограничиваем ширину (и высоту) карты доступной высотой панели,
+     чтобы карты не уходили под низ вьюпорта. */
+  width: min(clamp(96px, 13vh, 126px), calc((76dvh - 500px) * 450 / 650));
   aspect-ratio: 450 / 650;
   margin: 0 -8px;
   padding: 0;
